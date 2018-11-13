@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: firehydrant-k8s-changelog
+  namespace: firehydrant-system
+  labels:
+    app: firehydrant-k8s-changelog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firehydrant-k8s-changelog
+
+  template:
+    metadata:
+      labels:
+        app: firehydrant-k8s-changelog
+    spec:
+      serviceAccount: firehydrant-k8s-changelog-serviceaccount
+      containers:
+        - name: changelog
+          image: "{{ .Values.imageTag }}"
+          command:
+            - firehydrant-k8s-changelog
+            - watch
+          env:
+            - name: FIREHYDRANT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: firehydrant-keys
+                  key: api-key
+          volumeMounts:
+            - name: config
+              mountPath: /etc/k8s-watcher
+          resources:
+            limits:
+              cpu: 10m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 128Mi
+      volumes:
+        - name: config
+          configMap:
+            name: firehydrant-cm

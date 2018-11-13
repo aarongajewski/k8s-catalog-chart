@@ -1,0 +1,3 @@
+name: firehydrant-k8s-changelog
+version: 0.1.0
+description: An automatic changelog kubernetes controller for FireHydrant

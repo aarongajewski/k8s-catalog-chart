@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: firehydrant-cm
+  namespace: firehydrant-system
+data:
+  config.yml: |
+    apiToken: '$FIREHYDRANT_API_KEY'
+    watch:
+      {{- range $index, $element := .Values.environments }}
+      - namespace: "{{ $index }}"
+        environment: "{{ $element }}"
+      {{- end }}
